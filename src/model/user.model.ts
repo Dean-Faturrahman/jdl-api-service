@@ -10,3 +10,8 @@ export class UserResponse {
     name: string
     token?: string
 }
+
+export class LoginUserRequest {
+    email: string
+    password: string
+}

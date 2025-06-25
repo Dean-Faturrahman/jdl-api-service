@@ -17,31 +17,4 @@ export class UserService {
 
     }
 
-    async register(request: RegisterUserRequest): Promise<UserResponse> {
-        this.logger.info(`Register new user ${JSON.stringify(request)}`)
-        const registerRequest: RegisterUserRequest = this.validationService.validate(UserValidation.REGISTER, request)
-
-        const totalUserWithSameEmail = await this.prismaService.user.count({
-            where: {
-                email: registerRequest.email
-            }
-        })
-
-        if(totalUserWithSameEmail != 0) {
-            throw new HttpException('Email already exists', 400)
-        }
-
-        registerRequest.password = await bcrypt.hash(registerRequest.password, 10)
-
-        const user = await this.prismaService.user.create({
-            data: registerRequest
-        })
-
-        return {
-            email: user.email,
-            name: user.name
-        }
-
-        return null
-    }
 }

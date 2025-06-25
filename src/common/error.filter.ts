@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from "@nestjs/common";
+import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from "@nestjs/common";
 import { ZodError } from "zod";
 
 @Catch(ZodError, HttpException)
@@ -9,14 +9,21 @@ export class ErrorFilter implements ExceptionFilter {
 
         if (exception instanceof HttpException) {
             response.status(exception.getStatus()).json({
+                status_code: exception.getStatus(),
                 errors: exception.getResponse()
             })
         } else if (exception instanceof ZodError) {
+            const validationError = exception.errors.map(error => ({
+                path: error.path,
+                message: error.message
+            }));
             response.status(400).json({
-                errors: "Validation Error"
+                status_code: HttpStatus.BAD_REQUEST,
+                errors: validationError
             })
         } else {
             response.status(500).json({
+                status_code: HttpStatus.INTERNAL_SERVER_ERROR,
                 errors: exception.message
             })
         }

@@ -8,16 +8,4 @@ export class UserController {
     constructor(private userService: UserService) {
 
     }
-
-    @Post()
-    async register(
-        @Body() request: RegisterUserRequest
-    ): Promise<WebResponse<UserResponse>> {
-        const result = await this.userService.register(request)
-
-        return {
-            status_code: HttpStatus.CREATED,
-            data: result,
-        }
-    }
 }
