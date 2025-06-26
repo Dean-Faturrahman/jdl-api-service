@@ -1,0 +1,17 @@
+{
+  "isNotEmpty": "Field {property} tidak boleh kosong.",
+  "isUrl": "Field {property} harus berupa URL yang valid.",
+  "isArray": "Field {property} harus berupa array.",
+  "arrayNotEmpty": "Daftar {property} tidak boleh kosong.",
+  "isString": "Field {property} harus berupa teks.",
+  "language_code": {
+    "length": "Kode bahasa harus antara 2 hingga 5 karakter."
+  },
+  "field": {
+    "image_url": "URL Gambar",
+    "translations": "Terjemahan",
+    "language_code": "Kode Bahasa",
+    "title": "Judul",
+    "description": "Deskripsi"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "isNotEmpty": "The {property} field cannot be empty.",
+  "isUrl": "The {property} field must be a valid URL.",
+  "isArray": "The {property} must be an array.",
+  "arrayNotEmpty": "The {property} list cannot be empty.",
+  "isString": "The {property} must be a string.",
+  "language_code": {
+    "length": "The Language Code must be between 2 and 5 characters."
+  },
+  "field": {
+    "image_url": "Image URL",
+    "translations": "Translations",
+    "language_code": "Language Code",
+    "title": "Title",
+    "description": "Description"
+  }
+}

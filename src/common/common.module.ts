@@ -6,6 +6,8 @@ import { PrismaService } from './prisma.service';
 import { ValidationService } from './validation.service';
 import { APP_FILTER } from '@nestjs/core';
 import { ErrorFilter } from './error.filter';
+import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
+import * as path from 'path';
 
 @Global()
 @Module({
@@ -16,7 +18,18 @@ import { ErrorFilter } from './error.filter';
         }),
         ConfigModule.forRoot({
             isGlobal: true
-        })
+        }),
+        I18nModule.forRoot({
+            fallbackLanguage: 'id',
+            loaderOptions: {
+                path: path.join(__dirname, '../i18n/'),
+                watch: true,
+            },
+            resolvers: [
+                { use: QueryResolver, options: ['lang'] },
+                AcceptLanguageResolver,
+            ],
+        }),
     ],
     providers: [PrismaService, ValidationService, {
         provide: APP_FILTER,

@@ -16,11 +16,70 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique @db.VarChar(100)
-  password  String   
-  name      String   
+  password  String
+  name      String
   token     String?  @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
   @@map("users")
+}
+
+model Hero {
+  id         Int      @id @default(autoincrement())
+  image_url  String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  translations HeroTranslation[]
+
+  @@map("heroes")
+}
+
+model HeroTranslation {
+  id            Int      @id @default(autoincrement())
+  hero_id       Int
+  language_code String   @db.VarChar(5)
+  title         String
+  description   String   @db.Text
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  hero Hero @relation(fields: [hero_id], references: [id], onDelete: Cascade)
+
+  @@unique([hero_id, language_code])
+  @@map("hero_translations")
+}
+
+model Quote {
+  id         Int      @id @default(autoincrement())
+  quotes     String   @db.Text
+  author     String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("quotes")
+}
+
+model Highlight {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?  @db.Text
+  image_url   String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("highlights")
+}
+
+model Testimoninies {
+  id         Int      @id @default(autoincrement())
+  testimoni  String   @db.Text
+  author     String?
+  foto_url   String?
+  rating     Int?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("testimoni")
 }

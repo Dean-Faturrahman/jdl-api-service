@@ -4,7 +4,7 @@ import { WebResponse } from 'src/model/web.model';
 import { Public } from './decorator/public.decorator';
 import { AuthService } from './auth.service';
 
-@Controller('api/auth')
+@Controller('api/v1/auth')
 export class AuthController {
     constructor(private authService: AuthService) {}
 
