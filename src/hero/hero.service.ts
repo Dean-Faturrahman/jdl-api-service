@@ -9,8 +9,35 @@ import { I18nContext } from 'nestjs-i18n';
 export class HeroService {
   constructor(private readonly prisma: PrismaService) { }
 
-  create(createHeroDto: CreateHeroDto) {
-    return 'This action adds a new hero';
+  async create(createHeroDto: CreateHeroDto) {
+    const { image_url, translations } = createHeroDto;
+
+    const createdHero = await this.prisma.$transaction(async (tx) => {
+
+      const newHero = await tx.hero.create({
+        data: {
+          image_url: image_url,
+        },
+      });
+
+      const translationData = translations.map((translation) => ({
+        ...translation,
+        hero_id: newHero.id,
+      }));
+
+      await tx.heroTranslation.createMany({
+        data: translationData,
+      });
+
+      return tx.hero.findUnique({
+        where: { id: newHero.id },
+        include: {
+          translations: true, 
+        },
+      });
+    });
+
+    return createdHero;
   }
 
   async findAll(query: LanguageQueryDto) {

@@ -10,8 +10,15 @@ export class HeroController {
   constructor(private readonly heroService: HeroService) { }
 
   @Post()
-  create(@Body() createHeroDto: CreateHeroDto) {
-    return this.heroService.create(createHeroDto);
+  async create(@Body() createHeroDto: CreateHeroDto
+  ): Promise<WebResponse<any>> {
+    const result = await this.heroService.create(createHeroDto);
+
+    return {
+      status_code: HttpStatus.CREATED,
+      message: "Successfully created a new hero",
+      data: result,
+    }
   }
 
   @Get()
