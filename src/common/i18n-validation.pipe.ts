@@ -59,7 +59,7 @@ export class I18nValidationPipe extends ValidationPipe {
 
     const flatten = (errs: ValidationError[], parentPath = '') => {
       errs.forEach((err) => {
-        const path = parentPath ? `${parentPath}.${err.property}` : err.property;
+        const path = err.property;
 
         if (err.children && err.children.length > 0) {
           flatten(err.children, path);
