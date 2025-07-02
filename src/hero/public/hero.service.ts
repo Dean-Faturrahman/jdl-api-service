@@ -9,37 +9,6 @@ import { I18nContext } from 'nestjs-i18n';
 export class HeroService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async create(createHeroDto: CreateHeroDto) {
-    const { image_url, translations } = createHeroDto;
-
-    const createdHero = await this.prisma.$transaction(async (tx) => {
-
-      const newHero = await tx.hero.create({
-        data: {
-          image_url: image_url,
-        },
-      });
-
-      const translationData = translations.map((translation) => ({
-        ...translation,
-        hero_id: newHero.id,
-      }));
-
-      await tx.heroTranslation.createMany({
-        data: translationData,
-      });
-
-      return tx.hero.findUnique({
-        where: { id: newHero.id },
-        include: {
-          translations: true, 
-        },
-      });
-    });
-
-    return createdHero;
-  }
-
   async findAll(query: LanguageQueryDto) {
     const lang = I18nContext.current()?.lang;
     
@@ -95,62 +64,5 @@ export class HeroService {
       title: translation?.title || null,
       description: translation?.description || null,
     };
-  }
-
-  async update(id: number, updateHeroDto: UpdateHeroDto) {
-    const { image_url, translations } = updateHeroDto;
-
-    const heroExists = await this.prisma.hero.findUnique({
-      where: { id },
-    });
-
-    if (!heroExists) {
-      throw new NotFoundException(`Hero dengan ID ${id} tidak ditemukan.`);
-    }
-
-    const updatedHero = await this.prisma.$transaction(async (tx) => {
-      if (image_url) {
-        await tx.hero.update({
-          where: { id: id },
-          data: { image_url: image_url },
-        });
-      }
-
-      if (translations) {
-        await tx.heroTranslation.deleteMany({
-          where: { hero_id: id },
-        });
-
-        const translationData = translations.map((translation) => ({
-          ...translation,
-          hero_id: id,
-        }));
-
-        await tx.heroTranslation.createMany({
-          data: translationData,
-        });
-      }
-
-      return tx.hero.findUnique({
-        where: { id },
-        include: { translations: true },
-      });
-    });
-
-    return updatedHero;
-  }
-
-  async remove(id: number) {
-    const hero = await this.prisma.hero.findUnique({
-      where: { id },
-    });
-
-    if (!hero) {
-      throw new NotFoundException(`Hero dengan ID ${id} tidak ditemukan.`);
-    }
-
-    return this.prisma.hero.delete({
-      where: { id },
-    });
   }
 }

@@ -4,22 +4,19 @@ import { ZodError } from "zod";
 @Catch(ZodError, HttpException)
 export class ErrorFilter implements ExceptionFilter {
     catch(exception: any, host: ArgumentsHost) {
-        
+
         const response = host.switchToHttp().getResponse()
+        const errorResponse = exception.getResponse();
+
+        const errorMessage =
+            typeof errorResponse === 'object' && (errorResponse as any).message
+                ? (errorResponse as any).message
+                : errorResponse;
 
         if (exception instanceof HttpException) {
             response.status(exception.getStatus()).json({
                 status_code: exception.getStatus(),
-                errors: exception.getResponse()
-            })
-        } else if (exception instanceof ZodError) {
-            const validationError = exception.errors.map(error => ({
-                path: error.path,
-                message: error.message
-            }));
-            response.status(400).json({
-                status_code: HttpStatus.BAD_REQUEST,
-                errors: validationError
+                errors: errorMessage
             })
         } else {
             response.status(500).json({

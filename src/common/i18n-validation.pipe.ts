@@ -28,7 +28,6 @@ export class I18nValidationPipe extends ValidationPipe {
 
         const simplifiedErrors = this.formatErrors(errors.message);
         throw new BadRequestException(simplifiedErrors);
-
       }
       throw e;
     }
@@ -45,31 +44,33 @@ export class I18nValidationPipe extends ValidationPipe {
     if (error.constraints) {
       for (const key in error.constraints) {
         const translationKey = error.constraints[key];
-        const propertyName = await this.i18n.translate(`validation.field.${error.property}`);
-
-        error.constraints[key] = await this.i18n.translate(translationKey, {
-          args: { property: propertyName || error.property },
-        });
+        try {
+          const propertyName = await this.i18n.translate(`validation.field.${error.property}`);
+          error.constraints[key] = await this.i18n.translate(translationKey, {
+            args: { property: propertyName || error.property },
+          });
+        } catch (err) {
+          error.constraints[key] = translationKey;
+        }
       }
     }
   }
 
   private formatErrors(errors: ValidationError[]) {
-    const result: Record<string, string> = {};
+    if (errors.length === 0) {
+      return 'Terjadi kesalahan validasi.';
+    }
 
-    const flatten = (errs: ValidationError[], parentPath = '') => {
-      errs.forEach((err) => {
-        const path = err.property;
+    let error = errors[0];
 
-        if (err.children && err.children.length > 0) {
-          flatten(err.children, path);
-        } else if (err.constraints) {
-          result[path] = Object.values(err.constraints)[0];
-        }
-      });
-    };
+    while (error.children && error.children.length > 0) {
+      error = error.children[0];
+    }
 
-    flatten(errors);
-    return result;
+    if (error.constraints) {
+      return Object.values(error.constraints)[0];
+    }
+
+    return 'Something went wrong.';
   }
 }
