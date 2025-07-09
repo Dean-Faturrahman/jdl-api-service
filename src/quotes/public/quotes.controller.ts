@@ -15,7 +15,7 @@ export class QuotesController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
   ): Promise<WebResponse<any>> {
-    const result = await this.quotesService.findAll();
+    const result = await this.quotesService.findAll(page, limit);
 
     return {
       status_code: HttpStatus.OK,

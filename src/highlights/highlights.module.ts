@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { HighlightsController } from './admin/highlights.controller';
-import { HighlightsService } from './admin/highlights.service';
+import { AdminHighlightsController } from './admin/highlights.controller';
+import { AdminHighlightsService } from './admin/highlights.service';
+import { HighlightsController } from './public/highlights.controller';
+import { HighlightsService } from './public/highlights.service';
 
 @Module({
-  controllers: [HighlightsController],
-  providers: [HighlightsService],
+  controllers: [AdminHighlightsController, HighlightsController],
+  providers: [AdminHighlightsService, HighlightsService],
 })
 export class HighlightsModule {}

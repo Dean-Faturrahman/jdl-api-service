@@ -8,12 +8,23 @@ import { WebResponse } from 'src/model/web.model';
 export class AdminQuotesController {
   constructor(private readonly quotesService: AdminQuotesService) { }
 
+  @Post()
+  async create(@Body() createQuoteDto: CreateQuoteDto): Promise<WebResponse<any>> {
+    const result = await this.quotesService.create(createQuoteDto);
+    
+    return {
+      status_code: HttpStatus.CREATED,
+      message: 'Successfully created a quote',
+      data: result,
+    };
+  }
+
   @Get()
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
   ): Promise<WebResponse<any>> {
-    const result = await this.quotesService.findAll();
+    const result = await this.quotesService.findAll(page, limit);
 
     return {
       status_code: HttpStatus.OK,
