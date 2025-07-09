@@ -5,5 +5,5 @@ export class CreateQuoteDto {
     @IsNotEmpty({ message: 'Quotes cannot be empty' })
     quotes: string;
 
-    author: string;
+    author?: string;
 }

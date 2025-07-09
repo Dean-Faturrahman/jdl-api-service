@@ -91,8 +91,8 @@ export class AdminQuotesService {
     return updatedQuote;
   }
 
-  remove(id: number) {
-    const quote = this.prisma.quote.findUnique({
+  async remove(id: number) {
+    const quote = await this.prisma.quote.findUnique({
       where: { id },
     });
 

@@ -50,6 +50,7 @@ export class AdminQuotesController {
     @Body() updateQuoteDto: UpdateQuoteDto
   ): Promise<WebResponse<any>> {
     const result = await this.quotesService.update(id, updateQuoteDto);
+    
     return {
       status_code: HttpStatus.OK,
       message: 'Successfully updated a quote',

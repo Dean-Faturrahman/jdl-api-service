@@ -72,14 +72,12 @@ model Highlight {
   @@map("highlights")
 }
 
-model Testimoninies {
+model Testimony {
   id         Int      @id @default(autoincrement())
-  testimoni  String   @db.Text
+  testimony  String   @db.Text
   author     String?
-  foto_url   String?
-  rating     Int?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  @@map("testimoni")
+  @@map("testimonies")
 }
