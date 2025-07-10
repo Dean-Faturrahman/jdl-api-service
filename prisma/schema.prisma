@@ -26,15 +26,26 @@ model User {
 }
 
 model Hero {
-  id         Int      @id @default(autoincrement())
-  image_url  String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id           Int       @id @default(autoincrement())
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
 
   translations HeroTranslation[]
+  images       HeroImage[]
 
   @@map("heroes")
 }
+
+model HeroImage {
+  id      Int    @id @default(autoincrement())
+  url     String
+
+  heroId  Int
+  hero    Hero   @relation(fields: [heroId], references: [id], onDelete: Cascade)
+
+  @@map("hero_images")
+}
+
 
 model HeroTranslation {
   id            Int      @id @default(autoincrement())

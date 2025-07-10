@@ -11,39 +11,13 @@ export class HeroService {
 
   async findAll(query: LanguageQueryDto) {
     const lang = I18nContext.current()?.lang;
-    
-    const heroes = await this.prisma.hero.findMany({
+
+    const hero = await this.prisma.hero.findFirst({
       orderBy: {
         id: 'desc',
       },
       include: {
-        translations: {
-          where: {
-            language_code: lang,
-          },
-        },
-      },
-    });
-
-    const data = heroes.map((hero) => {
-      const translation = hero.translations[0];
-      return {
-        id: hero.id,
-        image_url: hero.image_url,
-        title: translation?.title || null,
-        description: translation?.description || null,
-      };
-    });
-
-    return data;
-  }
-
-  async findOne(id: number, query: LanguageQueryDto) {
-    const lang = I18nContext.current()?.lang;
-
-    const hero = await this.prisma.hero.findUnique({
-      where: { id },
-      include: {
+        images: true,
         translations: {
           where: {
             language_code: lang,
@@ -53,16 +27,49 @@ export class HeroService {
     });
 
     if (!hero) {
-      throw new NotFoundException(`Hero dengan ID ${id} tidak ditemukan.`);
+      return [];
     }
 
     const translation = hero.translations[0];
 
-    return {
+    const data = [{
       id: hero.id,
-      image_url: hero.image_url,
+      images: hero.images.map(img => ({
+        id: img.id,
+        url: img.url,
+      })),
       title: translation?.title || null,
       description: translation?.description || null,
-    };
+    }];
+
+    return data;
   }
+
+  // async findOne(id: number, query: LanguageQueryDto) {
+  //   const lang = I18nContext.current()?.lang;
+
+  //   const hero = await this.prisma.hero.findUnique({
+  //     where: { id },
+  //     include: {
+  //       translations: {
+  //         where: {
+  //           language_code: lang,
+  //         },
+  //       },
+  //     },
+  //   });
+
+  //   if (!hero) {
+  //     throw new NotFoundException(`Hero dengan ID ${id} tidak ditemukan.`);
+  //   }
+
+  //   const translation = hero.translations[0];
+
+  //   return {
+  //     id: hero.id,
+  //     image_url: hero.image_url,
+  //     title: translation?.title || null,
+  //     description: translation?.description || null,
+  //   };
+  // }
 }

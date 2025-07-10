@@ -2,7 +2,6 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpStatus, P
 import { AdminHeroService } from './hero.service';
 import { CreateHeroDto } from '../dto/create-hero.dto';
 import { UpdateHeroDto } from '../dto/update-hero.dto';
-import { LanguageQueryDto } from 'src/common/dto/language-query.dto';
 import { WebResponse } from 'src/model/web.model';
 
 @Controller('api/v1/admin/heroes')

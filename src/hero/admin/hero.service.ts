@@ -16,13 +16,15 @@ export class AdminHeroService {
 
       const newHero = await tx.hero.create({
         data: {
-          image_url: image_url,
+          images: {
+            create: image_url.map((img) => ({ url: img.url })),
+          },
         },
       });
 
       const translationData = translations.map((translation) => ({
         ...translation,
-        hero_id: newHero.id,
+        hero_id: newHero.id
       }));
 
       await tx.heroTranslation.createMany({
@@ -32,7 +34,8 @@ export class AdminHeroService {
       return tx.hero.findUnique({
         where: { id: newHero.id },
         include: {
-          translations: true, 
+          images: true,
+          translations: true,
         },
       });
     });
@@ -43,9 +46,10 @@ export class AdminHeroService {
   async findAll() {
     const hero = await this.prisma.hero.findFirst({
       orderBy: {
-        id: 'asc',
+        id: 'desc',
       },
       include: {
+        images: true,
         translations: true,
       },
     });
@@ -98,9 +102,15 @@ export class AdminHeroService {
 
     const updatedHero = await this.prisma.$transaction(async (tx) => {
       if (image_url) {
-        await tx.hero.update({
-          where: { id: id },
-          data: { image_url: image_url },
+        await tx.heroImage.deleteMany({
+          where: { heroId: id },
+        });
+
+        await tx.heroImage.createMany({
+          data: image_url.map((img) => ({
+            url: img.url,
+            heroId: id,
+          })),
         });
       }
 
@@ -121,7 +131,10 @@ export class AdminHeroService {
 
       return tx.hero.findUnique({
         where: { id },
-        include: { translations: true },
+        include: {
+          images: true,
+          translations: true,
+        },
       });
     });
 

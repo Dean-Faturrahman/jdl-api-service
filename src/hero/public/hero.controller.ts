@@ -24,17 +24,17 @@ export class HeroController {
     }
   }
 
-  @Get(':id')
-  async findOne(
-    @Param('id', ParseIntPipe) id: number, 
-    @Query() query: LanguageQueryDto,
-  ) {
-    const result = await this.heroService.findOne(id, query);
+  // @Get(':id')
+  // async findOne(
+  //   @Param('id', ParseIntPipe) id: number, 
+  //   @Query() query: LanguageQueryDto,
+  // ) {
+  //   const result = await this.heroService.findOne(id, query);
 
-    return {
-      status_code: HttpStatus.OK,
-      message: "Successfully retrieved a hero",
-      data: result,
-    }
-  }
+  //   return {
+  //     status_code: HttpStatus.OK,
+  //     message: "Successfully retrieved a hero",
+  //     data: result,
+  //   }
+  // }
 }
