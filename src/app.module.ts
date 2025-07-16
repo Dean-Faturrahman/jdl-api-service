@@ -4,11 +4,11 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { HeroModule } from './hero/hero.module';
 import { QuotesModule } from './quotes/quotes.module';
-import { HighlightsModule } from './highlights/highlights.module';
 import { TestimoniesModule } from './testimonies/testimonies.module';
+import { TripsModule } from './trips/trips.module';
 
 @Module({
-  imports: [CommonModule, UserModule, AuthModule, HeroModule, QuotesModule, HighlightsModule, TestimoniesModule],
+  imports: [CommonModule, UserModule, AuthModule, HeroModule, QuotesModule, TestimoniesModule, TripsModule],
   controllers: [],
   providers: [],
 })

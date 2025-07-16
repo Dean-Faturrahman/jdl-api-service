@@ -49,7 +49,12 @@ export class AdminHeroService {
         id: 'desc',
       },
       include: {
-        images: true,
+        images: {
+          select: {
+            id: true,
+            url: true,
+          },
+        },
         translations: true,
       },
     });
@@ -103,13 +108,13 @@ export class AdminHeroService {
     const updatedHero = await this.prisma.$transaction(async (tx) => {
       if (image_url) {
         await tx.heroImage.deleteMany({
-          where: { heroId: id },
+          where: { hero_id: id },
         });
 
         await tx.heroImage.createMany({
           data: image_url.map((img) => ({
             url: img.url,
-            heroId: id,
+            hero_id: id,
           })),
         });
       }

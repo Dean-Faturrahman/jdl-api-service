@@ -8,12 +8,15 @@ export class AdminTestimoniesService {
   constructor(private readonly prisma: PrismaService) { }
 
   async create(createTestimonyDto: CreateTestimonyDto) {
-    const { testimony, author } = createTestimonyDto;
+    const { testimony, author, trip_id } = createTestimonyDto;
 
     const newTestimony = await this.prisma.testimony.create({
       data: {
         testimony,
         author,
+        trip: {
+          connect: { id: trip_id },
+        },
       },
     });
 
@@ -28,6 +31,23 @@ export class AdminTestimoniesService {
     const testimonies = await this.prisma.testimony.findMany({
       skip: skip,
       take: limit,
+      select: {
+        id: true,
+        author: true,
+        testimony: true,
+        trip: {
+          select: {
+            id: true,
+            translations: {
+              select: {
+                language_code: true,
+                title: true,
+                location: true,
+              }
+            }
+          },
+        },
+      },
       orderBy: {
         id: 'asc',
       },
@@ -42,12 +62,18 @@ export class AdminTestimoniesService {
         limit: limit,
       },
       testimonies,
-    };
+    }
   }
 
   async findOne(id: number) {
     const testimony = await this.prisma.testimony.findUnique({
       where: { id },
+      select: {
+        id: true,
+        author: true,
+        testimony: true,
+        trip: true
+      }
     });
 
     if (!testimony) {
@@ -58,7 +84,7 @@ export class AdminTestimoniesService {
   }
 
   async update(id: number, updateTestimonyDto: UpdateTestimonyDto) {
-    const { testimony, author } = updateTestimonyDto;
+    const { trip_id, testimony, author } = updateTestimonyDto;
 
     const exitingTestimony = await this.prisma.testimony.findUnique({
       where: { id },
@@ -68,7 +94,26 @@ export class AdminTestimoniesService {
       throw new NotFoundException(`Testimony with ID ${id} not found`);
     }
 
+    const existingTrip = await this.prisma.trip.findUnique({
+      where: { id: trip_id },
+    });
+
+    if (!existingTrip) {
+      throw new NotFoundException(`Trip with ID ${trip_id} not found`);
+    }
+
     const updatedTestimony = await this.prisma.$transaction(async (tx) => {
+      if (trip_id) {
+        await tx.testimony.update({
+          where: { id },
+          data: {
+            trip: {
+              connect: { id: trip_id },
+            },
+          },
+        });
+      }
+
       if (testimony) {
         await tx.testimony.update({
           where: { id },

@@ -54,6 +54,10 @@ export class AuthGuard implements CanActivate {
             where: { id: request.user.sub },
         });
 
+        if (!result) {
+            throw new HttpException("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+
         if (!result.token) {
             throw new HttpException("Unauthorized", HttpStatus.UNAUTHORIZED)
         }
