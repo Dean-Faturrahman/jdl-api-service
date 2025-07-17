@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { TripsService } from './admin/trips.service';
-import { TripsController } from './admin/trips.controller';
+import { AdminTripsService } from './admin/trips.service';
+import { AdminTripsController } from './admin/trips.controller';
+import { TripsController } from './public/trips.controller';
+import { TripsService } from './public/trips.service';
 
 @Module({
-  controllers: [TripsController],
-  providers: [TripsService],
+  controllers: [AdminTripsController, TripsController],
+  providers: [AdminTripsService, TripsService],
 })
 export class TripsModule {}

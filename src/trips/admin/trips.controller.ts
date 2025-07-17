@@ -1,12 +1,12 @@
 import { Controller, Get, Post,  Body, Patch, Param, Delete, HttpStatus, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
-import { TripsService } from './trips.service';
+import { AdminTripsService } from './trips.service';
 import { CreateTripDto } from '../dto/create-trip.dto';
 import { UpdateTripDto } from '../dto/update-trip.dto';
 import { WebResponse } from 'src/model/web.model';
 
 @Controller('api/v1/admin/trips')
-export class TripsController {
-  constructor(private readonly tripsService: TripsService) {}
+export class AdminTripsController {
+  constructor(private readonly tripsService: AdminTripsService) {}
 
   @Post()
   async create(@Body() createTripDto: CreateTripDto): Promise<WebResponse<any>> {
