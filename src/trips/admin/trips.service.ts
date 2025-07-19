@@ -13,7 +13,8 @@ export class AdminTripsService {
       longitude,
       price,
       discount,
-      isHighlight,
+      is_highlight,
+      is_active,
       translations,
       images,
       facilities,
@@ -27,8 +28,8 @@ export class AdminTripsService {
         longitude,
         price,
         discount,
-        isHighlight,
-
+        is_highlight,
+        is_active,
         translations: {
           create: translations,
         },
@@ -111,7 +112,8 @@ export class AdminTripsService {
         id: trip.id,
         price: trip.price,
         discount: trip.discount,
-        isHighlight: trip.isHighlight,
+        is_highlight: trip.is_highlight,
+        is_active: trip.is_active,
         title: translation?.title || null,
         description: translation?.description || null,
         location: translation?.location || null,
@@ -130,6 +132,12 @@ export class AdminTripsService {
   }
 
   async findOne(id: number) {
+    const bookUrl = await this.prisma.companyProfile.findFirstOrThrow({
+      select: {
+        book_url: true,
+      },
+    });
+
     const trip = await this.prisma.trip.findUnique({
       where: { id },
       include: {
@@ -193,7 +201,10 @@ export class AdminTripsService {
       throw new NotFoundException(`Trip with ID ${id} not found`);
     }
 
-    return trip;
+    return {
+      ...trip,
+      bookUrl: bookUrl.book_url,
+    };
   }
 
   async update(id: number, updateTripDto: UpdateTripDto) {
@@ -202,7 +213,8 @@ export class AdminTripsService {
       longitude,
       price,
       discount,
-      isHighlight,
+      is_highlight,
+      is_active,
       translations,
       images,
       facilities,
@@ -226,7 +238,8 @@ export class AdminTripsService {
           longitude,
           price,
           discount,
-          isHighlight,
+          is_highlight,
+          is_active,
         },
       });
 
@@ -313,6 +326,14 @@ export class AdminTripsService {
   }
 
   async remove(id: number) {
+    const tripExists = await this.prisma.trip.findUnique({
+      where: { id },
+    });
+
+    if (!tripExists) {
+      throw new NotFoundException(`Trip with ID ${id} not found`);
+    }
+    
     return this.prisma.trip.delete({
       where: { id },
     });

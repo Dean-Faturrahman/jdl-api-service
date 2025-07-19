@@ -17,6 +17,7 @@ export class TestimoniesService {
             id: true,
             author: true,
             testimony: true,
+            is_shown: true,
             trip: {
                select: {
                   id: true,
@@ -31,6 +32,9 @@ export class TestimoniesService {
                   },
                },
             },
+         },
+         where: {
+            is_shown: true,
          },
          orderBy: {
             id: 'asc',

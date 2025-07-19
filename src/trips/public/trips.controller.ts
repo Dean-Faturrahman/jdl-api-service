@@ -14,9 +14,9 @@ export class TripsController {
         @Query() query: LanguageQueryDto,
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
         @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
-        @Query('is_highlight', new ParseBoolPipe({ optional: true })) ishighlight?: boolean,
+        @Query('is_highlight', new ParseBoolPipe({ optional: true })) is_highlight?: boolean,
     ): Promise<WebResponse<any>> {
-        const result = await this.tripsService.findAll(query, page, limit, ishighlight);
+        const result = await this.tripsService.findAll(query, page, limit, is_highlight);
 
         return {
             status_code: HttpStatus.OK,

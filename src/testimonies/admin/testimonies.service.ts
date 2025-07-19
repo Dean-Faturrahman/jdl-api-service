@@ -8,12 +8,13 @@ export class AdminTestimoniesService {
   constructor(private readonly prisma: PrismaService) { }
 
   async create(createTestimonyDto: CreateTestimonyDto) {
-    const { testimony, author, trip_id } = createTestimonyDto;
+    const { testimony, author, trip_id, is_shown } = createTestimonyDto;
 
     const newTestimony = await this.prisma.testimony.create({
       data: {
         testimony,
         author,
+        is_shown: is_shown ?? false,
         trip: {
           connect: { id: trip_id },
         },
@@ -35,6 +36,7 @@ export class AdminTestimoniesService {
         id: true,
         author: true,
         testimony: true,
+        is_shown: true,
         trip: {
           select: {
             id: true,
@@ -72,6 +74,7 @@ export class AdminTestimoniesService {
         id: true,
         author: true,
         testimony: true,
+        is_shown: true,
         trip: true
       }
     });
@@ -84,7 +87,7 @@ export class AdminTestimoniesService {
   }
 
   async update(id: number, updateTestimonyDto: UpdateTestimonyDto) {
-    const { trip_id, testimony, author } = updateTestimonyDto;
+    const { trip_id, testimony, author, is_shown } = updateTestimonyDto;
 
     const exitingTestimony = await this.prisma.testimony.findUnique({
       where: { id },
@@ -94,12 +97,14 @@ export class AdminTestimoniesService {
       throw new NotFoundException(`Testimony with ID ${id} not found`);
     }
 
-    const existingTrip = await this.prisma.trip.findUnique({
-      where: { id: trip_id },
-    });
+    if (trip_id) {
+      const existingTrip = await this.prisma.trip.findUnique({
+        where: { id: trip_id },
+      });
 
-    if (!existingTrip) {
-      throw new NotFoundException(`Trip with ID ${trip_id} not found`);
+      if (!existingTrip) {
+        throw new NotFoundException(`Trip with ID ${trip_id} not found`);
+      }
     }
 
     const updatedTestimony = await this.prisma.$transaction(async (tx) => {
@@ -111,6 +116,13 @@ export class AdminTestimoniesService {
               connect: { id: trip_id },
             },
           },
+        });
+      }
+
+      if (is_shown !== undefined) {
+        await tx.testimony.update({
+          where: { id },
+          data: { is_shown },
         });
       }
 

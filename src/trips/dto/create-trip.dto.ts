@@ -27,7 +27,11 @@ export class CreateTripDto {
 
   @IsOptional()
   @IsBoolean()
-  isHighlight?: boolean;
+  is_active?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  is_highlight?: boolean;
 
   @IsArray()
   @ValidateNested({ each: true })

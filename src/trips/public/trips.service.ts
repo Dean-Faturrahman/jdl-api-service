@@ -9,17 +9,19 @@ import { PrismaService } from "src/common/prisma.service";
 export class TripsService {
   constructor(private prisma: PrismaService) { }
 
-  async findAll(query: LanguageQueryDto, page: number = 1, limit: number = 10, ishighlight: boolean) {
+  async findAll(query: LanguageQueryDto, page: number = 1, limit: number = 10, is_highlight: boolean) {
     const lang = I18nContext.current()?.lang;
     const skip = (page - 1) * limit;
 
     const whereClause: Prisma.TripWhereInput = {};
 
-    if (typeof ishighlight === 'boolean') {
-      whereClause.isHighlight = ishighlight;
+    if (typeof is_highlight === 'boolean') {
+      whereClause.is_highlight = is_highlight;
     }
-
+    whereClause.is_active = true
+    
     const [trips, total] = await this.prisma.$transaction([
+
       this.prisma.trip.findMany({
         skip: skip,
         take: limit,
@@ -51,7 +53,8 @@ export class TripsService {
         id: trip.id,
         price: trip.price,
         discount: trip.discount,
-        isHighlight: trip.isHighlight,
+        is_highlight: trip.is_highlight,
+        is_active: trip.is_active,
         title: translation?.title || null,
         description: translation?.description || null,
         location: translation?.location || null,
@@ -78,7 +81,8 @@ export class TripsService {
         id: true,
         price: true,
         discount: true,
-        isHighlight: true,
+        is_highlight: true,
+        is_active: true,
         latitude: true,
         longitude: true,
         translations: {
@@ -151,6 +155,10 @@ export class TripsService {
       throw new NotFoundException(`Trip with ID ${id} not found`);
     }
 
+    if (tripRaw.is_active === false) {
+      throw new NotFoundException(`Trip is no longer active`);
+    }
+
     const trip = {
       id: tripRaw.id,
       title: tripRaw.translations[0]?.title || null,
@@ -160,7 +168,8 @@ export class TripsService {
       location: tripRaw.translations[0]?.location || null,
       latitude: tripRaw.latitude,
       longitude: tripRaw.longitude,
-      isHighlight: tripRaw.isHighlight,
+      is_highlight: tripRaw.is_highlight,
+      is_active: tripRaw.is_active,
       images: tripRaw.images,
       facilities: tripRaw.facilities.map(facility => ({
         id: facility.id,
