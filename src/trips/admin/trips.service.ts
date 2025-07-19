@@ -132,11 +132,13 @@ export class AdminTripsService {
   }
 
   async findOne(id: number) {
-    const bookUrl = await this.prisma.companyProfile.findFirstOrThrow({
+    const bookUrl = await this.prisma.companyProfile.findFirst({
       select: {
-        book_url: true,
+      book_url: true,
       },
     });
+
+    const bookUrlValue = bookUrl && bookUrl.book_url ? bookUrl.book_url : null;
 
     const trip = await this.prisma.trip.findUnique({
       where: { id },
@@ -203,7 +205,7 @@ export class AdminTripsService {
 
     return {
       ...trip,
-      bookUrl: bookUrl.book_url,
+      bookUrl: bookUrlValue,
     };
   }
 
