@@ -49,10 +49,6 @@ export class CreateCompanyDto {
     tiktok_url?: string;
 
     @IsOptional()
-    @IsUrl()
-    book_url?: string;
-
-    @IsOptional()
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => CreateCompanyTranslationDto)

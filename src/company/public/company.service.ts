@@ -22,7 +22,6 @@ export class CompanyService {
                 facebook_url: true,
                 instagram_url: true,
                 tiktok_url: true,
-                book_url: true,
                 translations: {
                     select: {
                         id: true,

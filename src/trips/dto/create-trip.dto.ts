@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsInt, IsNotEmpty, IsOptional, Max, Min, ValidateNested, IsString, IsNumber, IsBoolean } from 'class-validator';
+import { IsArray, IsInt, IsNotEmpty, IsOptional, Max, Min, ValidateNested, IsString, IsNumber, IsBoolean, IsUrl } from 'class-validator';
 import { CreateTripTranslationDto } from './trip-translataion.dto';
 import { CreateTripImageDto } from './trip-image.dto';
 import { CreateTripFacilityDto } from './trip-facility.dto';
@@ -14,7 +14,7 @@ export class CreateTripDto {
   @IsOptional()
   @IsString()
   longitude?: string;
-  
+
   @IsOptional()
   @IsNumber()
   price?: number;
@@ -24,6 +24,10 @@ export class CreateTripDto {
   @Min(0)
   @Max(100)
   discount?: number;
+
+  @IsOptional()
+  @IsUrl()
+  book_url?: string;
 
   @IsOptional()
   @IsBoolean()

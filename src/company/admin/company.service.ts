@@ -19,7 +19,6 @@ export class AdminCompanyService {
       instagram_url,
       tiktok_url,
       translations,
-      book_url,
       images,
     } = createCompanyDto;
 
@@ -34,7 +33,6 @@ export class AdminCompanyService {
         facebook_url,
         instagram_url,
         tiktok_url,
-        book_url,
         translations: {
           create: translations,
         },
@@ -62,7 +60,6 @@ export class AdminCompanyService {
         facebook_url: true,
         instagram_url: true,
         tiktok_url: true,
-        book_url: true,
         translations: {
           select: {
             id: true,
@@ -98,7 +95,6 @@ export class AdminCompanyService {
       facebook_url,
       instagram_url,
       tiktok_url,
-      book_url,
       translations,
       images,
     } = updateCompanyProfileDto;
@@ -116,7 +112,6 @@ export class AdminCompanyService {
           facebook_url,
           instagram_url,
           tiktok_url,
-          book_url,
         },
       });
 

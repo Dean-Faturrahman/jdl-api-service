@@ -103,6 +103,7 @@ model Trip {
   longitude    String?
   price        Float?
   discount     Int?
+  book_url     String?
   is_active    Boolean @default(true)
   is_highlight Boolean @default(false)
 
@@ -220,7 +221,6 @@ model CompanyProfile {
   latitude     String?
   longitude    String?
 
-  book_url      String?
   facebook_url  String?
   instagram_url String?
   tiktok_url    String?

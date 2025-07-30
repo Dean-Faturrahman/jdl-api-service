@@ -13,6 +13,7 @@ export class AdminTripsService {
       longitude,
       price,
       discount,
+      book_url,
       is_highlight,
       is_active,
       translations,
@@ -28,6 +29,7 @@ export class AdminTripsService {
         longitude,
         price,
         discount,
+        book_url,
         is_highlight,
         is_active,
         translations: {
@@ -112,6 +114,7 @@ export class AdminTripsService {
         id: trip.id,
         price: trip.price,
         discount: trip.discount,
+        book_url: trip.book_url,
         is_highlight: trip.is_highlight,
         is_active: trip.is_active,
         title: translation?.title || null,
@@ -132,13 +135,6 @@ export class AdminTripsService {
   }
 
   async findOne(id: number) {
-    const bookUrl = await this.prisma.companyProfile.findFirst({
-      select: {
-      book_url: true,
-      },
-    });
-
-    const bookUrlValue = bookUrl && bookUrl.book_url ? bookUrl.book_url : null;
 
     const trip = await this.prisma.trip.findUnique({
       where: { id },
@@ -205,7 +201,6 @@ export class AdminTripsService {
 
     return {
       ...trip,
-      bookUrl: bookUrlValue,
     };
   }
 
@@ -215,6 +210,7 @@ export class AdminTripsService {
       longitude,
       price,
       discount,
+      book_url,
       is_highlight,
       is_active,
       translations,
@@ -240,6 +236,7 @@ export class AdminTripsService {
           longitude,
           price,
           discount,
+          book_url,
           is_highlight,
           is_active,
         },
@@ -335,7 +332,7 @@ export class AdminTripsService {
     if (!tripExists) {
       throw new NotFoundException(`Trip with ID ${id} not found`);
     }
-    
+
     return this.prisma.trip.delete({
       where: { id },
     });
