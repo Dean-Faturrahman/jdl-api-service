@@ -10,9 +10,10 @@ import { CompanyModule } from './company/company.module';
 import { TeamModule } from './team/team.module';
 import { AppController } from './app.controller';
 import { StoriesModule } from './stories/stories.module';
+import { GalleriesModule } from './galleries/galleries.module';
 
 @Module({
-  imports: [CommonModule, UserModule, AuthModule, HeroModule, QuotesModule, TestimoniesModule, TripsModule, CompanyModule, TeamModule, StoriesModule],
+  imports: [CommonModule, UserModule, AuthModule, HeroModule, QuotesModule, TestimoniesModule, TripsModule, CompanyModule, TeamModule, StoriesModule, GalleriesModule],
   controllers: [AppController],
   providers: [],
 })

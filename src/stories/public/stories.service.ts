@@ -1,6 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateStoryDto } from '../dto/create-story.dto';
-import { UpdateStoryDto } from '../dto/update-story.dto';
 import { PrismaService } from 'src/common/prisma.service';
 import { I18nContext } from 'nestjs-i18n';
 import { LanguageQueryDto } from 'src/common/dto/language-query.dto';
