@@ -9,16 +9,26 @@ export class StoriesService {
   constructor(private readonly prisma: PrismaService) { }
 
   async findAll(page: number = 1, limit: number = 10) {
-    // const lang = I18nContext.current()?.lang;
     const skip = (page - 1) * limit;
 
-    return await this.prisma.story.findMany({
+    const stories = await this.prisma.story.findMany({
       skip: skip,
       take: limit,
       orderBy: {
         id: 'desc'
       }
     })
+
+    const total = await this.prisma.story.count()
+
+    return {
+      pagination: {
+        total: total,
+        page: page,
+        limit: limit,
+      },
+      stories,
+    }
   }
 
   async findOne(id: number) {

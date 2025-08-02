@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, ParseIntPipe, DefaultValuePipe, Query } from '@nestjs/common';
 import { AdminStoriesService } from './stories.service';
 import { CreateStoryDto } from '../dto/create-story.dto';
 import { UpdateStoryDto } from '../dto/update-story.dto';
@@ -19,8 +19,11 @@ export class AdminStoriesController {
   }
 
   @Get()
-  async findAll(): Promise<WebResponse<any>> {
-    const result = await this.storiesService.findAll();
+  async findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ): Promise<WebResponse<any>> {
+    const result = await this.storiesService.findAll(page, limit);
     return {
       status_code: HttpStatus.OK,
       message: 'Successfully retrieved all stories',

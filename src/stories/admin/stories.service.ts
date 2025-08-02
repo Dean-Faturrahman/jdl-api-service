@@ -13,12 +13,27 @@ export class AdminStoriesService {
     })
   }
 
-  async findAll() {
-    return await this.prisma.story.findMany({
+  async findAll(page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit;
+
+    const stories = await this.prisma.story.findMany({
+      skip: skip,
+      take: limit,
       orderBy: {
         id: 'desc'
       }
     })
+
+    const total = await this.prisma.story.count()
+
+    return {
+      pagination: {
+        total: total,
+        page: page,
+        limit: limit,
+      },
+      stories,
+    }
   }
 
   async findOne(id: number) {
@@ -56,7 +71,7 @@ export class AdminStoriesService {
     if (!existingStory) {
       throw new NotFoundException(`Story with ID ${id} not found`);
     }
-    
+
     return this.prisma.story.delete({
       where: { id },
     });
