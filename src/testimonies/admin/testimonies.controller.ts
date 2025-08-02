@@ -3,18 +3,30 @@ import { AdminTestimoniesService } from './testimonies.service';
 import { CreateTestimonyDto } from '../dto/create-testimony.dto';
 import { UpdateTestimonyDto } from '../dto/update-testimony.dto';
 import { WebResponse } from 'src/model/web.model';
+import { CreateTestimonialRequestDto } from '../dto/create-testimonial-request.dto';
 
 @Controller('api/v1/admin/testimonies')
 export class AdminTestimoniesController {
   constructor(private readonly testimoniesService: AdminTestimoniesService) { }
 
-  @Post()
-  async create(@Body() createTestimonyDto: CreateTestimonyDto): Promise<WebResponse<any>> {
-    const result = await this.testimoniesService.create(createTestimonyDto);
+  // @Post()
+  // async create(@Body() createTestimonyDto: CreateTestimonyDto): Promise<WebResponse<any>> {
+  //   const result = await this.testimoniesService.create(createTestimonyDto);
+
+  //   return {
+  //     status_code: HttpStatus.CREATED,
+  //     message: 'Successfully created a testimony',
+  //     data: result,
+  //   };
+  // }
+
+  @Post('request')
+  async generateLink(@Body() createDto: CreateTestimonialRequestDto): Promise<WebResponse<any>> {
+    const result = await this.testimoniesService.generateLink(createDto);
 
     return {
       status_code: HttpStatus.CREATED,
-      message: 'Successfully created a testimony',
+      message: 'Successfully generated a link',
       data: result,
     };
   }

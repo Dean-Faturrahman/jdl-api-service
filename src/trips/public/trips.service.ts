@@ -145,9 +145,15 @@ export class TripsService {
         },
         testimonies: {
           select: {
-            id: true,
-            author: true,
-            testimony: true,
+            testimony: {
+              select: {
+                id: true,
+                author: true,
+                testimony: true,
+                created_at: true,
+                updated_at: true
+              }
+            }
           },
         },
       },
@@ -187,7 +193,13 @@ export class TripsService {
         id: term.id,
         description: term.translations[0]?.description || null,
       })),
-      testimonies: tripRaw.testimonies,
+      testimonies: tripRaw.testimonies.map(testimony => ({
+        id: testimony.testimony.id,
+        testimony: testimony.testimony.testimony,
+        author: testimony.testimony.author,
+        created_at: testimony.testimony.created_at,
+        updated_at: testimony.testimony.updated_at,
+      })),
     };
 
     return trip;

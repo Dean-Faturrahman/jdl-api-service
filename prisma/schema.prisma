@@ -88,11 +88,26 @@ model Testimony {
   is_shown   Boolean  @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
-  trip_id Int?
-  trip    Trip? @relation(fields: [trip_id], references: [id], onDelete: SetNull)
+  
+  request_id  Int?     @unique
+  request    TestimonialRequest? @relation(fields: [request_id], references: [id], onDelete: SetNull)
 
   @@map("testimonies")
+}
+
+model TestimonialRequest {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  status    RequestStatus @default(PENDING)
+  expiresAt DateTime
+
+  trip_id    Int
+  trip      Trip     @relation(fields: [trip_id], references: [id], onDelete: Cascade)
+
+  testimony Testimony?
+
+  createdAt DateTime @default(now())
+  @@map("testimonial_requests")
 }
 
 model Trip {
@@ -113,7 +128,7 @@ model Trip {
   facilities   TripFacility[]
   itinerary    TripItineraryItem[]
   terms        TripTerm[]
-  testimonies  Testimony[]
+  testimonies  TestimonialRequest[]
 
   @@map("trips")
 }
@@ -241,7 +256,6 @@ model CompanyProfileTranslation {
   vision        String? @db.Text
   mission       String? @db.Text
 
-  // Foreign Key ke CompanyProfile
   profile_id Int
   profile    CompanyProfile @relation(fields: [profile_id], references: [id], onDelete: Cascade)
 
@@ -322,4 +336,10 @@ model GalleryTranslation {
 
   @@unique([gallery_id, language_code])
   @@map("gallery_translations")
+}
+
+enum RequestStatus {
+  PENDING
+  COMPLETED
+  EXPIRED
 }
