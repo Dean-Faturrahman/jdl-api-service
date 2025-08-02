@@ -277,12 +277,49 @@ model TeamMember {
 
 model Story {
   id        Int     @id @default(autoincrement())
-  title     String
-  content   String  @db.Text
   image_url String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  translations StoryTranslation[]
+
   @@map("stories")
+}
+
+model StoryTranslation {
+  id            Int    @id @default(autoincrement())
+  language_code String
+  title         String @db.Text
+  content       String @db.Text
+
+  story_id Int
+  story    Story @relation(fields: [story_id], references: [id], onDelete: Cascade)
+
+  @@unique([story_id, language_code])
+  @@map("story_translations")
+}
+
+model Gallery {
+  id        Int     @id @default(autoincrement())
+  image_url String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  translations GalleryTranslation[]
+
+  @@map("galleries")
+}
+
+model GalleryTranslation {
+  id            Int    @id @default(autoincrement())
+  language_code String
+  description   String @db.Text
+
+  gallery_id Int
+  gallery Gallery @relation(fields: [gallery_id], references: [id], onDelete: Cascade)
+
+  @@unique([gallery_id, language_code])
+  @@map("gallery_translations")
 }

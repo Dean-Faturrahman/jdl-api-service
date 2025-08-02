@@ -8,9 +8,34 @@ export class AdminStoriesService {
   constructor(private readonly prisma: PrismaService) { }
 
   async create(createStoryDto: CreateStoryDto) {
-    return await this.prisma.story.create({
-      data: createStoryDto
-    })
+    const { image_url, translations } = createStoryDto;
+
+    const createdStory = await this.prisma.$transaction(async (tx) => {
+
+      const newStory = await tx.story.create({
+        data: {
+          image_url: image_url
+        },
+      });
+
+      const translationData = translations.map((translation) => ({
+        ...translation,
+        story_id: newStory.id
+      }));
+
+      await tx.storyTranslation.createMany({
+        data: translationData,
+      });
+
+      return tx.story.findUnique({
+        where: { id: newStory.id },
+        include: {
+          translations: true
+        },
+      });
+    });
+
+    return createdStory;
   }
 
   async findAll(page: number = 1, limit: number = 10) {
@@ -19,6 +44,15 @@ export class AdminStoriesService {
     const stories = await this.prisma.story.findMany({
       skip: skip,
       take: limit,
+      include: {
+        translations: {
+          select: {
+            language_code: true,
+            title: true,
+            content: true
+          }
+        }
+      },
       orderBy: {
         id: 'desc'
       }
@@ -32,12 +66,21 @@ export class AdminStoriesService {
         page: page,
         limit: limit,
       },
-      stories,
+      data: stories,
     }
   }
 
   async findOne(id: number) {
     const story = await this.prisma.story.findUnique({
+      include: {
+       translations: {
+          select: {
+            language_code: true,
+            title: true,
+            content: true
+          }
+        }
+      },
       where: { id },
     });
 
@@ -49,6 +92,8 @@ export class AdminStoriesService {
   }
 
   async update(id: number, updateStoryDto: UpdateStoryDto) {
+    const { image_url, translations } = updateStoryDto;
+
     const existingStory = await this.prisma.story.findUnique({
       where: { id },
     });
@@ -57,10 +102,39 @@ export class AdminStoriesService {
       throw new NotFoundException(`Story with ID ${id} not found`);
     }
 
-    return this.prisma.story.update({
-      where: { id },
-      data: updateStoryDto,
+    const updatedStory = await this.prisma.$transaction(async (tx) => {
+
+      await this.prisma.story.update({
+        where: { id },
+        data: {
+          image_url: image_url
+        },
+      });
+
+      if (translations) {
+        await tx.storyTranslation.deleteMany({
+          where: { story_id: id },
+        });
+
+        const translationData = translations.map((translation) => ({
+          ...translation,
+          story_id: id,
+        }));
+
+        await tx.storyTranslation.createMany({
+          data: translationData,
+        });
+      }
+
+      return tx.story.findUnique({
+        where: { id },
+        include: {
+          translations: true,
+        },
+      });
     });
+
+    return updatedStory;
   }
 
   async remove(id: number) {
