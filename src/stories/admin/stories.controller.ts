@@ -1,12 +1,12 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, ParseIntPipe } from '@nestjs/common';
-import { StoriesService } from './stories.service';
+import { AdminStoriesService } from './stories.service';
 import { CreateStoryDto } from '../dto/create-story.dto';
 import { UpdateStoryDto } from '../dto/update-story.dto';
 import { WebResponse } from 'src/model/web.model';
 
-@Controller('stories')
-export class StoriesController {
-  constructor(private readonly storiesService: StoriesService) { }
+@Controller('api/v1/admin/stories')
+export class AdminStoriesController {
+  constructor(private readonly storiesService: AdminStoriesService) { }
 
   @Post()
   async create(@Body() createStoryDto: CreateStoryDto): Promise<WebResponse<any>> {

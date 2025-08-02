@@ -4,7 +4,7 @@ import { UpdateStoryDto } from '../dto/update-story.dto';
 import { PrismaService } from 'src/common/prisma.service';
 
 @Injectable()
-export class StoriesService {
+export class AdminStoriesService {
   constructor(private readonly prisma: PrismaService) { }
 
   async create(createStoryDto: CreateStoryDto) {
