@@ -144,17 +144,21 @@ export class TripsService {
           },
         },
         testimonies: {
-          select: {
+          select:{
+            id: true,
+            token: true,
+            status: true,
+            expiresAt: true,
             testimony: {
               select: {
                 id: true,
                 author: true,
                 testimony: true,
-                created_at: true,
-                updated_at: true
+                is_shown: true,
+                created_at: true
               }
             }
-          },
+          }
         },
       },
     });
@@ -169,37 +173,46 @@ export class TripsService {
 
     const trip = {
       id: tripRaw.id,
-      title: tripRaw.translations[0]?.title || null,
-      description: tripRaw.translations[0]?.description || null,
+      title: tripRaw.translations?.[0]?.title ?? null,
+      description: tripRaw.translations?.[0]?.description ?? null,
       price: tripRaw.price,
       discount: tripRaw.discount,
       book_url: tripRaw.book_url,
-      location: tripRaw.translations[0]?.location || null,
+      location: tripRaw.translations?.[0]?.location ?? null,
       latitude: tripRaw.latitude,
       longitude: tripRaw.longitude,
       is_highlight: tripRaw.is_highlight,
       is_active: tripRaw.is_active,
-      images: tripRaw.images,
-      facilities: tripRaw.facilities.map(facility => ({
+      images: Array.isArray(tripRaw.images) ? tripRaw.images : [],
+      facilities: Array.isArray(tripRaw.facilities)
+      ? tripRaw.facilities.map(facility => ({
         id: facility.id,
-        name: facility.translations[0]?.name || null,
-      })),
-      itinerary: tripRaw.itinerary.map(item => ({
+        name: facility.translations?.[0]?.name ?? null,
+        }))
+      : [],
+      itinerary: Array.isArray(tripRaw.itinerary)
+      ? tripRaw.itinerary.map(item => ({
         id: item.id,
         time: item.time,
-        activity: item.translations[0]?.activity || null,
-      })),
-      terms: tripRaw.terms.map(term => ({
+        activity: item.translations?.[0]?.activity ?? null,
+        }))
+      : [],
+      terms: Array.isArray(tripRaw.terms)
+      ? tripRaw.terms.map(term => ({
         id: term.id,
-        description: term.translations[0]?.description || null,
-      })),
-      testimonies: tripRaw.testimonies.map(testimony => ({
-        id: testimony.testimony.id,
-        testimony: testimony.testimony.testimony,
-        author: testimony.testimony.author,
-        created_at: testimony.testimony.created_at,
-        updated_at: testimony.testimony.updated_at,
-      })),
+        description: term.translations?.[0]?.description ?? null,
+        }))
+      : [],
+      testimonies: Array.isArray(tripRaw.testimonies)
+      ? tripRaw.testimonies
+        .filter(testimony => testimony?.testimony)
+        .map(testimony => ({
+          id: testimony.testimony.id,
+          testimony: testimony.testimony.testimony,
+          author: testimony.testimony.author,
+          created_at: testimony.testimony.created_at,
+        }))
+      : [],
     };
 
     return trip;

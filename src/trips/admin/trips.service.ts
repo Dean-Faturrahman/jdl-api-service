@@ -191,7 +191,22 @@ export class AdminTripsService {
             },
           },
         },
-        testimonies: true,
+        testimonies: {
+          select:{
+            id: true,
+            token: true,
+            status: true,
+            expiresAt: true,
+            testimony: {
+              select: {
+                author: true,
+                testimony: true,
+                is_shown: true,
+                created_at: true
+              }
+            }
+          }
+        },
       },
     });
 
