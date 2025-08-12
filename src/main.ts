@@ -14,6 +14,7 @@ async function bootstrap() {
 
   app.enableCors({
     origin:[
+      'https://www.jejakdualangkah.com',
       'https://jejakdualangkah.com'
     ]
   })
