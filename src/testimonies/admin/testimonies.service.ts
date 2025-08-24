@@ -236,7 +236,7 @@ export class AdminTestimoniesService {
     });
 
     // const url = `${process.env.FRONTEND_URL}/testimoni/${request.token}`;
-    const url = `http://localhost:3000/testimoni/${request.token}`;
+    const url = `https://jejakdualangkah.com/testimoni/${request.token}`;
 
     return { url };
   }
