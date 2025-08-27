@@ -17,7 +17,8 @@ async function bootstrap() {
       'https://www.jejakdualangkah.com',
       'https://jejakdualangkah.com',
       // 'http://localhost:3000'
-    ]
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   })
 
   await app.listen(3000);
