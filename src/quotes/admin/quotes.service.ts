@@ -69,19 +69,15 @@ export class AdminQuotesService {
     }
 
     const updatedQuote = await this.prisma.$transaction(async (tx) => {
-      if (quotes) {
-        await tx.quote.update({
-          where: { id: id },
-          data: { quotes: quotes },
-        });
-      }
+      await tx.quote.update({
+        where: { id: id },
+        data: { quotes: quotes },
+      });
 
-      if (author) {
-        await tx.quote.update({
-          where: { id: id },
-          data: { author: author },
-        });
-      }
+      await tx.quote.update({
+        where: { id: id },
+        data: { author: author },
+      });
 
       return tx.quote.findUnique({
         where: { id: id },
