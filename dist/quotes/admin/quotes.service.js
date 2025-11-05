@@ -71,7 +71,7 @@ let AdminQuotesService = class AdminQuotesService {
                     data: { quotes: quotes },
                 });
             }
-            if (author) {
+            if (author !== undefined) {
                 await tx.quote.update({
                     where: { id: id },
                     data: { author: author },

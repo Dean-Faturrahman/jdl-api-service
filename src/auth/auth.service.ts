@@ -70,7 +70,9 @@ export class AuthService {
         }
 
         const payload = { sub: user.id, username: user.email };
-        const token = await this.jwtService.signAsync(payload)
+        const token = await this.jwtService.signAsync(payload, {
+            expiresIn: 5, // Nilai dalam detik (seconds)
+        });
 
         user = await this.prismaService.user.update({
             where: {

@@ -1,9 +1,8 @@
-import { CanActivate, ExecutionContext, HttpException, HttpStatus, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from 'express';
-import { Logger } from "winston";
 import { jwtConstants } from "./constants";
-import { WINSTON_MODULE_PROVIDER } from "nest-winston";
+import { TokenExpiredError } from 'jsonwebtoken';
 import { PrismaService } from "src/common/prisma.service";
 import { Reflector } from "@nestjs/core";
 import { IS_PUBLIC_KEY } from "./decorator/public.decorator";
@@ -40,10 +39,12 @@ export class AuthGuard implements CanActivate {
                 }
             );
 
-            // 💡 We're assigning the payload to the request object here
-            // so that we can access it in our route handlers
             request['user'] = payload;
         } catch (e) {
+            if (e instanceof TokenExpiredError) {
+                throw new HttpException("Your session ended. Please login again.", HttpStatus.UNAUTHORIZED);
+            }
+
             throw new HttpException("Unauthorized", HttpStatus.UNAUTHORIZED);
         }
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, HttpCode, HttpStatus, Request, Post } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, HttpStatus, Request, Post, Get } from '@nestjs/common';
 import { LoginUserRequest, RegisterUserRequest, UserResponse } from 'src/model/user.model';
 import { WebResponse } from 'src/model/web.model';
 import { Public } from './decorator/public.decorator';
@@ -48,6 +48,16 @@ export class AuthController {
             status_code: HttpStatus.OK,
             message: "Successfully logged out",
             data: true,
+        }
+    }
+
+    @Get('/check')
+    async check(): Promise<WebResponse<UserResponse>> {
+        
+        return {
+            status_code: HttpStatus.OK,
+            message: "Successfully checked",
+            data: null,
         }
     }
 }

@@ -13,6 +13,7 @@ exports.AuthGuard = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const constants_1 = require("./constants");
+const jsonwebtoken_1 = require("jsonwebtoken");
 const prisma_service_1 = require("../common/prisma.service");
 const core_1 = require("@nestjs/core");
 const public_decorator_1 = require("./decorator/public.decorator");
@@ -42,6 +43,9 @@ let AuthGuard = class AuthGuard {
             request['user'] = payload;
         }
         catch (e) {
+            if (e instanceof jsonwebtoken_1.TokenExpiredError) {
+                throw new common_1.HttpException("Your session ended. Please login again.", common_1.HttpStatus.UNAUTHORIZED);
+            }
             throw new common_1.HttpException("Unauthorized", common_1.HttpStatus.UNAUTHORIZED);
         }
         const result = await this.prismaService.user.findUnique({

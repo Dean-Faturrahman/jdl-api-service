@@ -7,4 +7,5 @@ export declare class AuthController {
     register(request: RegisterUserRequest): Promise<WebResponse<UserResponse>>;
     login(request: LoginUserRequest): Promise<WebResponse<UserResponse>>;
     logout(req: any): Promise<WebResponse<Boolean>>;
+    check(): Promise<WebResponse<UserResponse>>;
 }

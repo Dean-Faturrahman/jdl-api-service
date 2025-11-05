@@ -15,6 +15,7 @@ async function bootstrap() {
         origin: [
             'https://www.jejakdualangkah.com',
             'https://jejakdualangkah.com',
+            'http://localhost:3000'
         ],
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     });

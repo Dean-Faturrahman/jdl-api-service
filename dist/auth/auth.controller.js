@@ -45,6 +45,13 @@ let AuthController = class AuthController {
             data: true,
         };
     }
+    async check() {
+        return {
+            status_code: common_1.HttpStatus.OK,
+            message: "Successfully checked",
+            data: null,
+        };
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -72,6 +79,12 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
+__decorate([
+    (0, common_1.Get)('/check'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "check", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('api/v1/auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
