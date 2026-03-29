@@ -68,9 +68,7 @@ let AuthService = class AuthService {
             throw new common_1.HttpException('Username or password is invalid', common_1.HttpStatus.UNAUTHORIZED);
         }
         const payload = { sub: user.id, username: user.email };
-        const token = await this.jwtService.signAsync(payload, {
-            expiresIn: 5,
-        });
+        const token = await this.jwtService.signAsync(payload);
         user = await this.prismaService.user.update({
             where: {
                 email: loginRequest.email
