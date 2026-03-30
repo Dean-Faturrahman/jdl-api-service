@@ -149,7 +149,7 @@ export class TripsService {
             token: true,
             status: true,
             expiresAt: true,
-            testimony: {
+            testimonies: {
               select: {
                 id: true,
                 author: true,
@@ -205,12 +205,12 @@ export class TripsService {
       : [],
       testimonies: Array.isArray(tripRaw.testimonies)
       ? tripRaw.testimonies
-        .filter(testimony => testimony?.testimony)
-        .map(testimony => ({
-          id: testimony.testimony.id,
-          testimony: testimony.testimony.testimony,
-          author: testimony.testimony.author,
-          created_at: testimony.testimony.created_at,
+        .flatMap(request => request.testimonies || [])
+        .map(t => ({
+          id: t.id,
+          testimony: t.testimony,
+          author: t.author,
+          created_at: t.created_at,
         }))
       : [],
     };

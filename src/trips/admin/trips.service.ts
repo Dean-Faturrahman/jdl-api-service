@@ -197,7 +197,7 @@ export class AdminTripsService {
             token: true,
             status: true,
             expiresAt: true,
-            testimony: {
+            testimonies: {
               select: {
                 author: true,
                 testimony: true,

@@ -224,8 +224,8 @@ export class AdminTestimoniesService {
 
     const token = randomBytes(20).toString('hex');
 
-    // expired date (7 days)
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    // expired date (1 hour)
+    const expiresAt = new Date(Date.now() + 1 * 60 * 60 * 1000);
 
     const request = await this.prisma.testimonialRequest.create({
       data: {

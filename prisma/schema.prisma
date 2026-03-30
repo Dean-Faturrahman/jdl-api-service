@@ -89,7 +89,7 @@ model Testimony {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   
-  request_id  Int?     @unique
+  request_id  Int?
   request    TestimonialRequest? @relation(fields: [request_id], references: [id], onDelete: SetNull)
 
   @@map("testimonies")
@@ -104,7 +104,7 @@ model TestimonialRequest {
   trip_id    Int
   trip      Trip     @relation(fields: [trip_id], references: [id], onDelete: Cascade)
 
-  testimony Testimony?
+  testimonies Testimony[]
 
   createdAt DateTime @default(now())
   @@map("testimonial_requests")

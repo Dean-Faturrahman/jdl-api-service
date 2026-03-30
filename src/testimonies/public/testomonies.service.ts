@@ -86,9 +86,7 @@ export class TestimoniesService {
       if (!request) {
          throw new NotFoundException('Testimonial link not found');
       }
-      if (request.status !== 'PENDING') {
-         throw new BadRequestException('Testimonial link has already been used');
-      }
+
       if (new Date() > request.expiresAt) {
          throw new BadRequestException('Testimonial link has expired');
       }
@@ -108,7 +106,7 @@ export class TestimoniesService {
          });
 
          if (!request) throw new NotFoundException('Link is not valid');
-         if (request.status !== 'PENDING') throw new BadRequestException('Link has already been used');
+
          if (new Date() > request.expiresAt) throw new BadRequestException('Link has expired');
 
          const newTestimony = await tx.testimony.create({
@@ -120,10 +118,7 @@ export class TestimoniesService {
             },
          });
 
-         await tx.testimonialRequest.update({
-            where: { id: request.id },
-            data: { status: 'COMPLETED' },
-         });
+
 
          return { message: 'Thank you, your testimony has been submitted!' };
       });

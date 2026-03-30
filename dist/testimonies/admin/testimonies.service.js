@@ -133,7 +133,7 @@ let AdminTestimoniesService = class AdminTestimoniesService {
             throw new common_1.NotFoundException(`Trip with ID ${createDto.trip_id} not found`);
         }
         const token = (0, crypto_1.randomBytes)(20).toString('hex');
-        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+        const expiresAt = new Date(Date.now() + 1 * 60 * 60 * 1000);
         const request = await this.prisma.testimonialRequest.create({
             data: {
                 token,

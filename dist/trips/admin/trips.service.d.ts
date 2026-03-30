@@ -95,6 +95,18 @@ export declare class AdminTripsService {
             id: number;
             url: string;
         }[];
+        testimonies: {
+            id: number;
+            status: import(".prisma/client").$Enums.RequestStatus;
+            token: string;
+            expiresAt: Date;
+            testimonies: {
+                testimony: string;
+                created_at: Date;
+                author: string;
+                is_shown: boolean;
+            }[];
+        }[];
         facilities: {
             id: number;
             translations: {
@@ -119,18 +131,6 @@ export declare class AdminTripsService {
                 language_code: string;
                 description: string;
             }[];
-        }[];
-        testimonies: {
-            testimony: {
-                testimony: string;
-                created_at: Date;
-                author: string;
-                is_shown: boolean;
-            };
-            id: number;
-            status: import(".prisma/client").$Enums.RequestStatus;
-            token: string;
-            expiresAt: Date;
         }[];
         id: number;
         latitude: string | null;
