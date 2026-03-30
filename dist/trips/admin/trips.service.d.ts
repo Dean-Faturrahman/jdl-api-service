@@ -84,6 +84,19 @@ export declare class AdminTripsService {
         }[];
     }>;
     findOne(id: number): Promise<{
+        testimonies: {
+            id: number;
+            testimony: {
+                testimony: string;
+                id: number;
+                created_at: Date;
+                author: string;
+                is_shown: boolean;
+            };
+            status: import(".prisma/client").$Enums.RequestStatus;
+            token: string;
+            expiresAt: Date;
+        }[];
         translations: {
             id: number;
             language_code: string;
@@ -94,18 +107,6 @@ export declare class AdminTripsService {
         images: {
             id: number;
             url: string;
-        }[];
-        testimonies: {
-            id: number;
-            status: import(".prisma/client").$Enums.RequestStatus;
-            token: string;
-            expiresAt: Date;
-            testimonies: {
-                testimony: string;
-                created_at: Date;
-                author: string;
-                is_shown: boolean;
-            }[];
         }[];
         facilities: {
             id: number;

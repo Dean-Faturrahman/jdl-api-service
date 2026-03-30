@@ -182,6 +182,7 @@ let AdminTripsService = class AdminTripsService {
                         expiresAt: true,
                         testimonies: {
                             select: {
+                                id: true,
                                 author: true,
                                 testimony: true,
                                 is_shown: true,
@@ -195,8 +196,17 @@ let AdminTripsService = class AdminTripsService {
         if (!trip) {
             throw new common_1.NotFoundException(`Trip with ID ${id} not found`);
         }
+        const { testimonies, ...tripData } = trip;
         return {
-            ...trip,
+            ...tripData,
+            testimonies: testimonies.flatMap((req) => {
+                const { testimonies: innerTestimonies, ...restReq } = req;
+                return (innerTestimonies || []).map((t) => ({
+                    ...restReq,
+                    id: t.id || restReq.id,
+                    testimony: t
+                }));
+            })
         };
     }
     async update(id, updateTripDto) {
