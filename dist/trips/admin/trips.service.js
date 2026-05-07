@@ -217,89 +217,70 @@ let AdminTripsService = class AdminTripsService {
         if (!tripExists) {
             throw new common_1.NotFoundException(`Trip with ID ${id} not found`);
         }
-        return this.prisma.$transaction(async (tx) => {
-            await tx.trip.update({
-                where: { id },
-                data: {
-                    latitude,
-                    longitude,
-                    price,
-                    discount,
-                    book_url,
-                    is_highlight,
-                    is_active,
-                },
-            });
-            if (translations) {
-                await tx.tripTranslation.deleteMany({ where: { trip_id: id } });
-                await tx.trip.update({
-                    where: { id },
-                    data: { translations: { create: translations } },
-                });
-            }
-            if (images) {
-                await tx.tripImage.deleteMany({ where: { trip_id: id } });
-                await tx.trip.update({
-                    where: { id },
-                    data: {
-                        images: {
-                            create: images.map(image => ({
-                                url: image.url
-                            })),
-                        },
+        const updateData = {
+            latitude,
+            longitude,
+            price,
+            discount,
+            book_url,
+            is_highlight,
+            is_active,
+        };
+        if (translations) {
+            updateData.translations = {
+                deleteMany: {},
+                create: translations,
+            };
+        }
+        if (images) {
+            updateData.images = {
+                deleteMany: {},
+                create: images.map(image => ({
+                    url: image.url
+                })),
+            };
+        }
+        if (facilities) {
+            updateData.facilities = {
+                deleteMany: {},
+                create: facilities.map(facility => ({
+                    translations: {
+                        create: facility.translations,
                     },
-                });
-            }
-            if (facilities) {
-                await tx.tripFacility.deleteMany({ where: { trip_id: id } });
-                for (const facility of facilities) {
-                    await tx.tripFacility.create({
-                        data: {
-                            trip_id: id,
-                            translations: {
-                                create: facility.translations,
-                            },
-                        },
-                    });
-                }
-            }
-            if (itinerary) {
-                await tx.tripItineraryItem.deleteMany({ where: { trip_id: id } });
-                for (const item of itinerary) {
-                    await tx.tripItineraryItem.create({
-                        data: {
-                            trip_id: id,
-                            time: item.time,
-                            translations: {
-                                create: item.translations,
-                            },
-                        },
-                    });
-                }
-            }
-            if (terms) {
-                await tx.tripTerm.deleteMany({ where: { trip_id: id } });
-                for (const term of terms) {
-                    await tx.tripTerm.create({
-                        data: {
-                            trip_id: id,
-                            translations: {
-                                create: term.translations,
-                            },
-                        },
-                    });
-                }
-            }
-            return tx.trip.findUnique({
-                where: { id },
-                include: {
-                    translations: true,
-                    images: true,
-                    facilities: { include: { translations: true } },
-                    itinerary: { include: { translations: true } },
-                    terms: { include: { translations: true } },
-                },
-            });
+                })),
+            };
+        }
+        if (itinerary) {
+            updateData.itinerary = {
+                deleteMany: {},
+                create: itinerary.map(item => ({
+                    time: item.time,
+                    translations: {
+                        create: item.translations,
+                    },
+                })),
+            };
+        }
+        if (terms) {
+            updateData.terms = {
+                deleteMany: {},
+                create: terms.map(term => ({
+                    translations: {
+                        create: term.translations,
+                    },
+                })),
+            };
+        }
+        return this.prisma.trip.update({
+            where: { id },
+            data: updateData,
+            include: {
+                translations: true,
+                images: true,
+                facilities: { include: { translations: true } },
+                itinerary: { include: { translations: true } },
+                terms: { include: { translations: true } },
+            },
         });
     }
     async remove(id) {

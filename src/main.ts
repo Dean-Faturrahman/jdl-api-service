@@ -13,7 +13,7 @@ async function bootstrap() {
   app.useLogger(logger)
 
   app.enableCors({
-    origin:[
+    origin: [
       'https://www.jejakdualangkah.com',
       'https://jejakdualangkah.com',
       'http://localhost:3000'
@@ -21,6 +21,6 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   })
 
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();
