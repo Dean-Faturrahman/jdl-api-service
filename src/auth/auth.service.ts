@@ -45,6 +45,7 @@ export class AuthService {
         return {
             email: user.email,
             name: user.name,
+            role: user.role,
         }
     }
 
@@ -69,7 +70,7 @@ export class AuthService {
             throw new HttpException('Username or password is invalid', HttpStatus.UNAUTHORIZED)
         }
 
-        const payload = { sub: user.id, username: user.email };
+        const payload = { sub: user.id, username: user.email, role: user.role };
         const token = await this.jwtService.signAsync(payload)
 
         user = await this.prismaService.user.update({
@@ -84,6 +85,7 @@ export class AuthService {
         return {
             email: user.email,
             name: user.name,
+            role: user.role,
             token: user.token,
         }
     }
@@ -100,7 +102,8 @@ export class AuthService {
 
         return {
             email: result.email,
-            name: result.name
+            name: result.name,
+            role: result.role
         }
     }
 }

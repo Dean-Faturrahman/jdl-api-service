@@ -17,4 +17,23 @@ export class UserService {
 
     }
 
+    async getCurrentUser(userId: number): Promise<UserResponse> {
+        this.logger.debug(`UserService.getCurrentUser(${userId})`);
+
+        const user = await this.prismaService.user.findUnique({
+            where: {
+                id: userId
+            }
+        });
+
+        if (!user) {
+            throw new HttpException('User not found', 404);
+        }
+
+        return {
+            email: user.email,
+            name: user.name,
+            role: user.role
+        };
+    }
 }
